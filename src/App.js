@@ -62,12 +62,19 @@ function App() {
       case 'onboarding':
         return <OnboardingPage userData={currentUser} onComplete={handleOnboardingComplete} />;
 
+
       case 'farm-mapping':
-        return <FarmMappingPage onComplete={handleFarmMappingComplete} isFromDashboard={false} />;
+        return (
+          <FarmMappingPage
+            onComplete={handleFarmMappingComplete}
+            isFromDashboard={false}
+          />
+        );
+
 
       case 'dashboard':
         return <DashboardPage onNavigate={handleNavigate} onLogout={handleLogout} />;
-        
+
       case 'practice':
         return (
           <EcoPracticePage
