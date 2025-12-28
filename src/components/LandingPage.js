@@ -168,9 +168,9 @@ const LandingPage = ({ onGetStarted }) => {
                 >
                   Start Earning Now →
                 </button>
-                <button className="px-8 py-4 border-2 border-green-600 text-green-600 rounded-xl font-bold text-lg hover:bg-green-50 transition">
+                {/* <button className="px-8 py-4 border-2 border-green-600 text-green-600 rounded-xl font-bold text-lg hover:bg-green-50 transition">
                   Watch Demo
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="relative">

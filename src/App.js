@@ -22,7 +22,7 @@ function App() {
   const handleLogin = (userData, isNewUser) => {
     setCurrentUser(userData);
     setGlobalCurrentUser(userData);
-    
+
     if (isNewUser) {
       setCurrentPage('onboarding');
     } else {
@@ -55,31 +55,37 @@ function App() {
     switch (currentPage) {
       case 'landing':
         return <LandingPage onGetStarted={handleGetStarted} />;
-      
+
       case 'login':
         return <LoginPage onLogin={handleLogin} onBack={() => setCurrentPage('landing')} />;
-      
+
       case 'onboarding':
         return <OnboardingPage userData={currentUser} onComplete={handleOnboardingComplete} />;
-      
+
       case 'farm-mapping':
         return <FarmMappingPage onComplete={handleFarmMappingComplete} isFromDashboard={false} />;
-      
+
       case 'dashboard':
         return <DashboardPage onNavigate={handleNavigate} onLogout={handleLogout} />;
-      
+        
       case 'practice':
-        return <EcoPracticePage onBack={() => handleNavigate('dashboard')} />;
-      
+        return (
+          <EcoPracticePage
+            onBack={() => handleNavigate('dashboard')}
+            onNavigate={handleNavigate}
+          />
+        );
+
+
       case 'proof-upload':
         return <ProofUploadPage onBack={() => handleNavigate('dashboard')} />;
-      
+
       case 'credits':
         return <CarbonCreditsPage onBack={() => handleNavigate('dashboard')} />;
-      
+
       case 'marketplace':
         return <MarketplacePage onBack={() => handleNavigate('dashboard')} />;
-      
+
       default:
         return <LandingPage onGetStarted={handleGetStarted} />;
     }
