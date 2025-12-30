@@ -55,7 +55,8 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
     area: '',
     cropType: '',
     village: '',
-    district: ''
+    taluka: '',
+    survey_no: ''
   });
 
   // Map states
@@ -95,6 +96,8 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
         cropType: 'Crop Type',
         village: 'Village',
         district: 'District',
+        taluka:'Taluka',
+        survey_no:'Survey No',
         selectCrop: 'Select crop type',
         startMapping: 'Start Mapping',
         howToMap: 'How to Map',
@@ -134,6 +137,8 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
         cropType: 'फसल का प्रकार',
         village: 'गाँव',
         district: 'जिला',
+        taluka:'तालुका',
+        survey_no:'सर्व्हे नंबर',
         selectCrop: 'फसल का प्रकार चुनें',
         startMapping: 'मैपिंग शुरू करें',
         howToMap: 'मैपिंग कैसे करें',
@@ -173,6 +178,8 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
         cropType: 'पीक प्रकार',
         village: 'गाव',
         district: 'जिल्हा',
+        taluka:'तालुका',
+        survey_no:'सर्व्हे नंबर',
         selectCrop: 'पीक प्रकार निवडा',
         startMapping: 'मॅपिंग सुरू करा',
         howToMap: 'मॅपिंग कसे करावे',
@@ -373,6 +380,19 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {getTranslation('taluka')}
+                  </label>
+                  <input
+                    type="text"
+                    value={farmData.taluka}
+                    onChange={(e) => setFarmData({ ...farmData, taluka: e.target.value })}
+                    placeholder="Taluka name"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     {getTranslation('district')}
                   </label>
                   <input
@@ -380,6 +400,19 @@ const FarmMappingPage = ({ onComplete, isFromDashboard = false }) => {
                     value={farmData.district}
                     onChange={(e) => setFarmData({ ...farmData, district: e.target.value })}
                     placeholder="District name"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {getTranslation('survey_no')}
+                  </label>
+                  <input
+                    type="text"
+                    value={farmData.survey_no}
+                    onChange={(e) => setFarmData({ ...farmData, survey_no: e.target.value })}
+                    placeholder="Survey No."
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>

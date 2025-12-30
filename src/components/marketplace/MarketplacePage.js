@@ -1,133 +1,230 @@
 import { useState, useEffect } from 'react';
-import { 
-  getCurrentUser, 
-  getAllMarketListings,
-  createMarketListing,
-  calculateCarbonCredits
-} from './../../data/dataStore';
+import {
+  getCurrentUser,
+  calculateCarbonCredits,
+  getFarmsByUser,
+  getPracticesByUser
+} from '../../data/dataStore';
 
 const MarketplacePage = ({ onBack }) => {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('buy'); // 'buy' or 'sell'
-  const [listings, setListings] = useState([]);
-  const [availableCredits, setAvailableCredits] = useState(0);
-  const [sellForm, setSellForm] = useState({
-    credits: '',
-    pricePerCredit: 1000
-  });
-  const [success, setSuccess] = useState(false);
+  const [credits, setCredits] = useState(0);
+  const [farms, setFarms] = useState([]);
+  const [practices, setPractices] = useState([]);
+  const [certificateId, setCertificateId] = useState('');
+  const [showCertificate, setShowCertificate] = useState(false);
 
   useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
-    
+
     if (currentUser) {
-      const credits = calculateCarbonCredits(currentUser.id);
-      setAvailableCredits(credits);
-      
-      const allListings = getAllMarketListings();
-      setListings(allListings);
+      const userCredits = calculateCarbonCredits(currentUser.id);
+      setCredits(userCredits);
+
+      const userFarms = getFarmsByUser(currentUser.id);
+      setFarms(userFarms);
+
+      const userPractices = getPracticesByUser(currentUser.id);
+      setPractices(userPractices);
+
+      // Generate unique certificate ID
+      setCertificateId(`AGRI-${currentUser.id.slice(-6).toUpperCase()}-${new Date().getFullYear()}`);
     }
-  }, [success]);
+  }, []);
 
-  const handleSellSubmit = () => {
-    if (!sellForm.credits || parseFloat(sellForm.credits) <= 0) {
-      return;
+  // Dummy buyer data
+  const interestedBuyers = [
+    {
+      id: 1,
+      name: 'Tata Motors',
+      logo: '🚗',
+      industry: 'Automotive Manufacturing',
+      requirement: '500 tCO₂e',
+      priceRange: '₹800-1,200',
+      status: 'Open',
+      color: 'blue'
+    },
+    {
+      id: 2,
+      name: 'Infosys',
+      logo: '💻',
+      industry: 'Technology & Services',
+      requirement: '1,000 tCO₂e',
+      priceRange: '₹900-1,100',
+      status: 'Open',
+      color: 'purple'
+    },
+    {
+      id: 3,
+      name: 'Hindustan Unilever',
+      logo: '🧴',
+      industry: 'FMCG',
+      requirement: '750 tCO₂e',
+      priceRange: '₹850-1,000',
+      status: 'In Discussion',
+      color: 'green'
+    },
+    {
+      id: 4,
+      name: 'Reliance Industries',
+      logo: '⚡',
+      industry: 'Energy & Petrochemicals',
+      requirement: '2,000 tCO₂e',
+      priceRange: '₹1,000-1,500',
+      status: 'Open',
+      color: 'red'
     }
-
-    createMarketListing({
-      credits: parseFloat(sellForm.credits),
-      pricePerCredit: sellForm.pricePerCredit,
-      totalValue: parseFloat(sellForm.credits) * sellForm.pricePerCredit,
-      sellerName: user.name,
-      location: user.district || 'Maharashtra'
-    });
-
-    setSuccess(true);
-    setSellForm({ credits: '', pricePerCredit: 1000 });
-    
-    setTimeout(() => {
-      setSuccess(false);
-    }, 2000);
-  };
+  ];
 
   const getTranslation = (key) => {
     const lang = user?.language || 'hi';
     const translations = {
       en: {
         title: 'Carbon Credit Marketplace',
-        subtitle: 'Buy and sell carbon credits',
-        buy: 'Buy Credits',
-        sell: 'Sell Credits',
-        available: 'Available Credits',
-        seller: 'Seller',
-        location: 'Location',
-        credits: 'Credits',
-        price: 'Price per Credit',
-        total: 'Total Value',
-        buyNow: 'Buy Now',
-        listForSale: 'List for Sale',
-        yourCredits: 'Your Available Credits',
-        creditsToSell: 'Credits to Sell',
-        setPrice: 'Set Price per Credit',
-        estimatedEarnings: 'Estimated Earnings',
-        submit: 'List on Marketplace',
-        success: 'Listed successfully!',
-        noListings: 'No credits available',
-        tons: 'tons CO₂'
+        subtitle: 'Verified, traceable, and buyer-ready carbon credits',
+        certificate: 'Your Carbon Credit Certificate',
+        certificateDesc: 'Official verification of your environmental contribution',
+        farmerId: 'Farmer ID',
+        totalCredits: 'Total Verified Credits',
+        verificationStatus: 'Verification Status',
+        verified: 'Verified',
+        methodology: 'Methodology',
+        methodologyText: 'AI + Satellite + Geo-tagged Proof',
+        validity: 'Validity Period',
+        certificateId: 'Certificate ID',
+        downloadCert: 'Download Certificate',
+        shareCert: 'Share Certificate',
+        viewCert: 'View Certificate',
+        interestedBuyers: 'Interested Buyers',
+        buyersDesc: 'Companies actively looking to purchase carbon credits',
+        industry: 'Industry',
+        requirement: 'Carbon Requirement',
+        priceRange: 'Price Range',
+        status: 'Status',
+        requestConnect: 'Request to Connect',
+        matching: 'Credit Matching',
+        eligible: 'Your verified credits are eligible for',
+        buyers: 'buyer(s)',
+        matchNote: 'Final pricing & transfer occurs via partner registry or verified channels',
+        trustCompliance: 'Trust & Compliance',
+        verificationApproach: 'Verification Approach',
+        verificationDesc: 'Multi-layer verification using AI analysis, satellite imagery, and geo-tagged photo evidence',
+        dataIntegrity: 'Data Integrity',
+        integrityDesc: 'Blockchain-ready for future immutable record keeping',
+        thirdParty: 'Third-Party Verification',
+        thirdPartyDesc: 'Roadmap includes integration with certified auditors and international registries',
+        digitalCertificate: 'Digitally Generated Certificate',
+        generatedOn: 'Generated on'
       },
       hi: {
         title: 'कार्बन क्रेडिट मार्केटप्लेस',
-        subtitle: 'कार्बन क्रेडिट खरीदें और बेचें',
-        buy: 'क्रेडिट खरीदें',
-        sell: 'क्रेडिट बेचें',
-        available: 'उपलब्ध क्रेडिट',
-        seller: 'विक्रेता',
-        location: 'स्थान',
-        credits: 'क्रेडिट',
-        price: 'प्रति क्रेडिट मूल्य',
-        total: 'कुल मूल्य',
-        buyNow: 'अभी खरीदें',
-        listForSale: 'बिक्री के लिए सूचीबद्ध करें',
-        yourCredits: 'आपके उपलब्ध क्रेडिट',
-        creditsToSell: 'बेचने के लिए क्रेडिट',
-        setPrice: 'प्रति क्रेडिट मूल्य सेट करें',
-        estimatedEarnings: 'अनुमानित कमाई',
-        submit: 'मार्केटप्लेस पर सूचीबद्ध करें',
-        success: 'सफलतापूर्वक सूचीबद्ध!',
-        noListings: 'कोई क्रेडिट उपलब्ध नहीं',
-        tons: 'टन CO₂'
+        subtitle: 'सत्यापित, ट्रेस करने योग्य और खरीदार के लिए तैयार कार्बन क्रेडिट',
+        certificate: 'आपका कार्बन क्रेडिट प्रमाणपत्र',
+        certificateDesc: 'आपके पर्यावरणीय योगदान का आधिकारिक सत्यापन',
+        farmerId: 'किसान आईडी',
+        totalCredits: 'कुल सत्यापित क्रेडिट',
+        verificationStatus: 'सत्यापन स्थिति',
+        verified: 'सत्यापित',
+        methodology: 'पद्धति',
+        methodologyText: 'AI + सैटेलाइट + जियो-टैग प्रमाण',
+        validity: 'वैधता अवधि',
+        certificateId: 'प्रमाणपत्र आईडी',
+        downloadCert: 'प्रमाणपत्र डाउनलोड करें',
+        shareCert: 'प्रमाणपत्र साझा करें',
+        viewCert: 'प्रमाणपत्र देखें',
+        interestedBuyers: 'इच्छुक खरीदार',
+        buyersDesc: 'कार्बन क्रेडिट खरीदने के लिए सक्रिय रूप से देख रही कंपनियां',
+        industry: 'उद्योग',
+        requirement: 'कार्बन आवश्यकता',
+        priceRange: 'मूल्य सीमा',
+        status: 'स्थिति',
+        requestConnect: 'कनेक्ट का अनुरोध करें',
+        matching: 'क्रेडिट मिलान',
+        eligible: 'आपके सत्यापित क्रेडिट के लिए पात्र हैं',
+        buyers: 'खरीदार',
+        matchNote: 'अंतिम मूल्य निर्धारण और हस्तांतरण साझेदार रजिस्ट्री या सत्यापित चैनलों के माध्यम से होता है',
+        trustCompliance: 'विश्वास और अनुपालन',
+        verificationApproach: 'सत्यापन दृष्टिकोण',
+        verificationDesc: 'AI विश्लेषण, सैटेलाइट इमेजरी और जियो-टैग फोटो साक्ष्य का उपयोग करके बहु-स्तरीय सत्यापन',
+        dataIntegrity: 'डेटा अखंडता',
+        integrityDesc: 'भविष्य में अपरिवर्तनीय रिकॉर्ड रखने के लिए ब्लॉकचेन-तैयार',
+        thirdParty: 'तृतीय-पक्ष सत्यापन',
+        thirdPartyDesc: 'रोडमैप में प्रमाणित ऑडिटर और अंतर्राष्ट्रीय रजिस्ट्रियों के साथ एकीकरण शामिल है',
+        digitalCertificate: 'डिजिटल रूप से उत्पन्न प्रमाणपत्र',
+        generatedOn: 'पर उत्पन्न'
       },
       mr: {
         title: 'कार्बन क्रेडिट मार्केटप्लेस',
-        subtitle: 'कार्बन क्रेडिट्स खरेदी आणि विक्री करा',
-        buy: 'क्रेडिट्स खरेदी करा',
-        sell: 'क्रेडिट्स विकणे',
-        available: 'उपलब्ध क्रेडिट्स',
-        seller: 'विक्रेता',
-        location: 'स्थान',
-        credits: 'क्रेडिट्स',
-        price: 'प्रति क्रेडिट किंमत',
-        total: 'एकूण मूल्य',
-        buyNow: 'आता खरेदी करा',
-        listForSale: 'विक्रीसाठी यादी करा',
-        yourCredits: 'तुमची उपलब्ध क्रेडिट्स',
-        creditsToSell: 'विकण्यासाठी क्रेडिट्स',
-        setPrice: 'प्रति क्रेडिट किंमत सेट करा',
-        estimatedEarnings: 'अंदाजित कमाई',
-        submit: 'मार्केटप्लेसवर यादी करा',
-        success: 'यशस्वीरित्या यादी केली!',
-        noListings: 'कोणतेही क्रेडिट्स उपलब्ध नाहीत',
-        tons: 'टन CO₂'
+        subtitle: 'सत्यापित, ट्रेस करण्यायोग्य आणि खरेदीदारासाठी तयार कार्बन क्रेडिट्स',
+        certificate: 'तुमचे कार्बन क्रेडिट प्रमाणपत्र',
+        certificateDesc: 'तुमच्या पर्यावरणीय योगदानाचे अधिकृत सत्यापन',
+        farmerId: 'शेतकरी आयडी',
+        totalCredits: 'एकूण सत्यापित क्रेडिट्स',
+        verificationStatus: 'सत्यापन स्थिती',
+        verified: 'सत्यापित',
+        methodology: 'पद्धत',
+        methodologyText: 'AI + सॅटेलाइट + जिओ-टॅग पुरावा',
+        validity: 'वैधता कालावधी',
+        certificateId: 'प्रमाणपत्र आयडी',
+        downloadCert: 'प्रमाणपत्र डाउनलोड करा',
+        shareCert: 'प्रमाणपत्र शेअर करा',
+        viewCert: 'प्रमाणपत्र पहा',
+        interestedBuyers: 'इच्छुक खरेदीदार',
+        buyersDesc: 'कार्बन क्रेडिट्स खरेदी करण्यासाठी सक्रियपणे शोधत असलेल्या कंपन्या',
+        industry: 'उद्योग',
+        requirement: 'कार्बन आवश्यकता',
+        priceRange: 'किंमत श्रेणी',
+        status: 'स्थिती',
+        requestConnect: 'कनेक्ट करण्याची विनंती',
+        matching: 'क्रेडिट जुळणी',
+        eligible: 'तुमची सत्यापित क्रेडिट्स पात्र आहेत',
+        buyers: 'खरेदीदार',
+        matchNote: 'अंतिम किंमत आणि हस्तांतरण भागीदार नोंदणी किंवा सत्यापित चॅनेलद्वारे होते',
+        trustCompliance: 'विश्वास आणि अनुपालन',
+        verificationApproach: 'सत्यापन दृष्टिकोन',
+        verificationDesc: 'AI विश्लेषण, सॅटेलाइट इमेजरी आणि जिओ-टॅग फोटो पुराव्याचा वापर करून बहु-स्तरीय सत्यापन',
+        dataIntegrity: 'डेटा अखंडता',
+        integrityDesc: 'भविष्यातील अपरिवर्तनीय रेकॉर्ड ठेवण्यासाठी ब्लॉकचेन-तयार',
+        thirdParty: 'तृतीय-पक्ष सत्यापन',
+        thirdPartyDesc: 'रोडमॅपमध्ये प्रमाणित ऑडिटर आणि आंतरराष्ट्रीय नोंदणींसह एकत्रीकरण समाविष्ट आहे',
+        digitalCertificate: 'डिजिटली व्युत्पन्न प्रमाणपत्र',
+        generatedOn: 'रोजी व्युत्पन्न'
       }
     };
     return translations[lang][key];
   };
 
+  const handleDownloadCertificate = () => {
+    // In production, this would generate a PDF
+    alert('Certificate download will be implemented with PDF generation library');
+  };
+
+  const handleShareCertificate = () => {
+    const shareText = `I've earned ${credits} verified carbon credits through sustainable farming! 🌱 Certificate ID: ${certificateId}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Carbon Credit Certificate',
+        text: shareText,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert('Certificate link copied to clipboard!');
+    }
+  };
+
+  const handleRequestConnect = (buyerName) => {
+    alert(`Connection request sent to ${buyerName}. Our team will facilitate the introduction.`);
+  };
+
+  const matchingBuyers = credits > 0 ? interestedBuyers.filter(b => b.status === 'Open').length : 0;
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
@@ -136,178 +233,270 @@ const MarketplacePage = ({ onBack }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">🏪</span>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800">{getTranslation('title')}</h1>
-              <p className="text-sm text-gray-600">{getTranslation('subtitle')}</p>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{getTranslation('title')}</h1>
+            <p className="text-sm text-gray-600">{getTranslation('subtitle')}</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-            <span className="text-2xl">✅</span>
-            <span className="text-green-800 font-medium">{getTranslation('success')}</span>
+        {/* Carbon Credit Certificate Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <span>📜</span>
+                {getTranslation('certificate')}
+              </h2>
+              <p className="text-gray-600">{getTranslation('certificateDesc')}</p>
+            </div>
+            <button
+              onClick={() => setShowCertificate(!showCertificate)}
+              className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
+            >
+              {showCertificate ? '← Back' : getTranslation('viewCert')}
+            </button>
           </div>
-        )}
 
-        {/* Tabs */}
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setActiveTab('buy')}
-            className={`flex-1 py-3 px-6 font-semibold rounded-xl transition-all ${
-              activeTab === 'buy'
-                ? 'bg-white text-green-600 shadow-lg'
-                : 'bg-white bg-opacity-50 text-gray-600 hover:bg-white'
-            }`}
-          >
-            🛒 {getTranslation('buy')}
-          </button>
-          <button
-            onClick={() => setActiveTab('sell')}
-            className={`flex-1 py-3 px-6 font-semibold rounded-xl transition-all ${
-              activeTab === 'sell'
-                ? 'bg-white text-green-600 shadow-lg'
-                : 'bg-white bg-opacity-50 text-gray-600 hover:bg-white'
-            }`}
-          >
-            💰 {getTranslation('sell')}
-          </button>
-        </div>
+          {/* Certificate Preview Card */}
+          {!showCertificate ? (
+            <div className="bg-white rounded-3xl shadow-xl p-8 border-4 border-green-200">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                    <span className="text-4xl">🌾</span>
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-bold text-gray-900">AgriCarbon</h3>
+                    <p className="text-green-600 font-medium">{getTranslation('digitalCertificate')}</p>
+                  </div>
+                </div>
+                <div className="w-24 h-24 bg-gray-200 rounded-xl flex items-center justify-center">
+                  <div className="text-xs text-center text-gray-600">QR Code</div>
+                </div>
+              </div>
 
-        {activeTab === 'buy' ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.length > 0 ? (
-              listings.map((listing) => (
-                <div key={listing.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">👨‍🌾</span>
-                        <h3 className="font-bold text-gray-800">{listing.sellerName || 'Farmer'}</h3>
-                      </div>
-                      <p className="text-sm text-gray-600">📍 {listing.location || 'India'}</p>
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <div className="space-y-4 flex flex-col items-center text-center">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{getTranslation('farmerId')}</p>
+                    <p className="text-xl font-bold text-gray-900">{user.name}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{getTranslation('totalCredits')}</p>
+                    <div className="flex items-center justify-start gap-2">
+                      <span className="text-4xl font-bold text-green-600">{credits}</span>
+                      <span className="text-gray-600">tCO₂e</span>
                     </div>
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-2xl">💚</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4 flex flex-col items-center text-center">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{getTranslation('verificationStatus')}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">✅</span>
+                      <span className="text-xl font-bold text-green-600">{getTranslation('verified')}</span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 mb-6">
-                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                      <span className="text-sm text-gray-700">{getTranslation('credits')}</span>
-                      <span className="font-bold text-green-700">{listing.credits} {getTranslation('tons')}</span>
-                    </div>
-
-                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                      <span className="text-sm text-gray-700">{getTranslation('price')}</span>
-                      <span className="font-bold text-blue-700">₹{listing.pricePerCredit}</span>
-                    </div>
-
-                    <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-                      <span className="text-sm text-gray-700">{getTranslation('total')}</span>
-                      <span className="font-bold text-yellow-700">₹{listing.totalValue.toLocaleString()}</span>
-                    </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{getTranslation('methodology')}</p>
+                    <p className="text-sm font-semibold text-gray-800">{getTranslation('methodologyText')}</p>
                   </div>
+                </div>
+              </div>
 
-                  <button className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition duration-200">
-                    {getTranslation('buyNow')}
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="p-4 bg-blue-50 rounded-xl">
+                  <p className="text-sm text-gray-600 mb-1">{getTranslation('validity')}</p>
+                  <p className="font-bold text-gray-900">{new Date().getFullYear()} - {new Date().getFullYear() + 1}</p>
+                </div>
+
+                <div className="p-4 bg-purple-50 rounded-xl">
+                  <p className="text-sm text-gray-600 mb-1">{getTranslation('certificateId')}</p>
+                  <p className="font-mono font-bold text-gray-900">{certificateId}</p>
+                </div>
+              </div>
+
+              <div className="border-t-2 border-dashed border-gray-300 pt-4">
+                <p className="text-xs text-gray-500 text-center mb-4">
+                  {getTranslation('generatedOn')} {new Date().toLocaleDateString()}
+                </p>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleDownloadCertificate}
+                    className="flex-1 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:shadow-xl transition flex items-center justify-center gap-2"
+                  >
+                    <span>📄</span>
+                    {getTranslation('downloadCert')}
+                  </button>
+                  <button
+                    onClick={handleShareCertificate}
+                    className="flex-1 py-3 border-2 border-green-600 text-green-600 rounded-xl font-bold hover:bg-green-50 transition flex items-center justify-center gap-2"
+                  >
+                    <span>🔗</span>
+                    {getTranslation('shareCert')}
                   </button>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-16">
-                <span className="text-6xl mb-4 block">🏪</span>
-                <p className="text-gray-500 text-lg">{getTranslation('noListings')}</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              {/* Available Credits Display */}
-              <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">{getTranslation('yourCredits')}</p>
-                    <p className="text-3xl font-bold text-green-700">{availableCredits} {getTranslation('tons')}</p>
-                  </div>
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-4xl">💚</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sell Form */}
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {getTranslation('creditsToSell')}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    max={availableCredits}
-                    value={sellForm.credits}
-                    onChange={(e) => setSellForm({ ...sellForm, credits: e.target.value })}
-                    placeholder="10.0"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                  <p className="mt-2 text-sm text-gray-500">
-                    Max: {availableCredits} {getTranslation('tons')}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {getTranslation('setPrice')}
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="500"
-                      max="2000"
-                      step="50"
-                      value={sellForm.pricePerCredit}
-                      onChange={(e) => setSellForm({ ...sellForm, pricePerCredit: parseInt(e.target.value) })}
-                      className="flex-1"
-                    />
-                    <div className="w-32 px-4 py-2 bg-gray-100 rounded-lg text-center font-bold text-gray-800">
-                      ₹{sellForm.pricePerCredit}
-                    </div>
-                  </div>
-                  <div className="mt-2 flex justify-between text-xs text-gray-500">
-                    <span>₹500</span>
-                    <span>₹2000</span>
-                  </div>
-                </div>
-
-                {/* Earnings Preview */}
-                {sellForm.credits && (
-                  <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-700 font-medium">{getTranslation('estimatedEarnings')}</span>
-                      <span className="text-2xl font-bold text-yellow-700">
-                        ₹{(parseFloat(sellForm.credits || 0) * sellForm.pricePerCredit).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={handleSellSubmit}
-                  disabled={!sellForm.credits || parseFloat(sellForm.credits) <= 0 || parseFloat(sellForm.credits) > availableCredits}
-                  className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition duration-200 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  {getTranslation('submit')}
-                </button>
               </div>
             </div>
+          ) : (
+            /* Full Certificate View */
+            <div className="bg-white rounded-3xl shadow-2xl p-12 border-8 border-double border-green-600">
+              <div className="text-center mb-8">
+                <div className="inline-block w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mb-6">
+                  <span className="text-7xl">🏆</span>
+                </div>
+                <h2 className="text-5xl font-bold text-gray-900 mb-4">Certificate of Achievement</h2>
+                <p className="text-2xl text-green-600 font-semibold">Carbon Credit Verification</p>
+              </div>
+
+              <div className="max-w-3xl mx-auto">
+                <p className="text-center text-xl text-gray-700 mb-8">
+                  This certifies that <span className="font-bold text-gray-900">{user.name}</span> has successfully generated and verified
+                </p>
+
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 text-center mb-8">
+                  <div className="text-7xl font-bold text-green-600 mb-2">{credits}</div>
+                  <div className="text-2xl text-gray-700">Tons of CO₂ Equivalent</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">Certificate ID</p>
+                    <p className="font-mono font-bold text-lg">{certificateId}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">Issue Date</p>
+                    <p className="font-bold text-lg">{new Date().toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                <div className="border-t-4 border-green-600 pt-6 flex justify-between items-end">
+                  <div className="text-center">
+                    <div className="mb-2 text-3xl">🌾</div>
+                    <div className="font-bold">AgriCarbon Platform</div>
+                    <div className="text-sm text-gray-600">Digital Verification</div>
+                  </div>
+                  <div className="w-32 h-32 bg-gray-200 rounded-xl flex items-center justify-center">
+                    <div className="text-xs text-center text-gray-600">QR Code<br />Verification</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Credit Matching Section */}
+        {credits > 0 && (
+          <div className="mb-8 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl shadow-xl p-8 border-2 border-blue-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span>🎯</span>
+              {getTranslation('matching')}
+            </h3>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex-1">
+                <p className="text-lg text-gray-700">
+                  {getTranslation('eligible')} <span className="text-3xl font-bold text-blue-600">{matchingBuyers}</span> {getTranslation('buyers')}
+                </p>
+              </div>
+              <div className="px-6 py-3 bg-blue-600 text-white rounded-full font-bold text-lg">
+                {Math.round((matchingBuyers / interestedBuyers.length) * 100)}% Match
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 italic">
+              💡 {getTranslation('matchNote')}
+            </p>
           </div>
         )}
+
+        {/* Interested Buyers Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+            <span>🏢</span>
+            {getTranslation('interestedBuyers')}
+          </h2>
+          <p className="text-gray-600 mb-6">{getTranslation('buyersDesc')}</p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {interestedBuyers.map((buyer) => (
+              <div
+                key={buyer.id}
+                className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition p-8 border-2 border-gray-200 hover:border-green-300"
+              >
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-16 h-16 bg-${buyer.color}-100 rounded-2xl flex items-center justify-center text-4xl`}>
+                      {buyer.logo}
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">{buyer.name}</h3>
+                      <p className="text-sm text-gray-600">{buyer.industry}</p>
+                    </div>
+                  </div>
+                  <span className={`px-4 py-2 rounded-full text-sm font-bold ${buyer.status === 'Open'
+                      ? 'bg-green-100 text-green-700 border-2 border-green-300'
+                      : 'bg-yellow-100 text-yellow-700 border-2 border-yellow-300'
+                    }`}>
+                    {buyer.status}
+                  </span>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm text-gray-600">{getTranslation('requirement')}</span>
+                    <span className="font-bold text-gray-900">{buyer.requirement}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+                    <span className="text-sm text-gray-600">{getTranslation('priceRange')}</span>
+                    <span className="font-bold text-green-600">{buyer.priceRange}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleRequestConnect(buyer.name)}
+                  disabled={credits === 0 || buyer.status !== 'Open'}
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold hover:shadow-lg transition disabled:bg-gray-400 disabled:from-gray-400 disabled:to-gray-400"
+                >
+                  {getTranslation('requestConnect')} →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trust & Compliance Section */}
+        <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span>🔒</span>
+            {getTranslation('trustCompliance')}
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl">
+              <div className="text-4xl mb-4">✔️</div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{getTranslation('verificationApproach')}</h3>
+              <p className="text-sm text-gray-700">{getTranslation('verificationDesc')}</p>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl">
+              <div className="text-4xl mb-4">🔗</div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{getTranslation('dataIntegrity')}</h3>
+              <p className="text-sm text-gray-700">{getTranslation('integrityDesc')}</p>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
+              <div className="text-4xl mb-4">🏅</div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{getTranslation('thirdParty')}</h3>
+              <p className="text-sm text-gray-700">{getTranslation('thirdPartyDesc')}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
