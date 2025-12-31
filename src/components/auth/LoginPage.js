@@ -11,7 +11,7 @@ const LoginPage = ({ onLogin, onBack }) => {
     setError('');
     
     if (!mobile || mobile.length !== 10) {
-      setError('कृपया वैध 10 अंकों का मोबाइल नंबर दर्ज करें');
+      setError('Please Enter 10 -digit Mobile Number');
       return;
     }
     
@@ -22,7 +22,7 @@ const LoginPage = ({ onLogin, onBack }) => {
     setError('');
     
     if (!otp || otp.length !== 4) {
-      setError('कृपया 4 अंकों का OTP दर्ज करें');
+      setError('Please Enter 4-digit OTP');
       return;
     }
     
@@ -65,12 +65,12 @@ const LoginPage = ({ onLogin, onBack }) => {
         <div className="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm bg-opacity-95">
           {step === 'mobile' ? (
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">लॉगिन करें</h2>
-              <p className="text-gray-600 mb-6">अपने मोबाइल नंबर से शुरू करें</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Login</h2>
+              <p className="text-gray-600 mb-6">Start With Your Mobile Number</p>
               
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  📱 मोबाइल नंबर
+                  📱 Mobile Number
                 </label>
                 <div className="flex">
                   <span className="inline-flex items-center px-4 bg-gradient-to-r from-gray-100 to-gray-200 border border-r-0 border-gray-300 rounded-l-xl text-gray-700 font-semibold">
@@ -97,16 +97,16 @@ const LoginPage = ({ onLogin, onBack }) => {
                 onClick={handleSendOTP}
                 className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                OTP भेजें →
+                Send OTP →
               </button>
 
-              <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
+              {/* <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
                 <p className="text-sm font-semibold text-blue-900 mb-2">🎯 डेमो के लिए:</p>
                 <div className="space-y-1 text-sm">
                   <p className="text-blue-700">✅ <span className="font-mono font-bold">9876543210</span> - मौजूदा यूज़र</p>
                   <p className="text-blue-700">✨ या कोई भी नया नंबर</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             <div>
@@ -117,17 +117,17 @@ const LoginPage = ({ onLogin, onBack }) => {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                <span className="text-sm">नंबर बदलें</span>
+                <span className="text-sm">Change Number?</span>
               </button>
 
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">OTP सत्यापन</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">OTP Verification</h2>
               <p className="text-gray-600 mb-6">
-                <span className="font-semibold">+91 {mobile}</span> पर भेजा गया OTP दर्ज करें
+                <span className="font-semibold">Enetr the OTP sent on +91 {mobile}</span> 
               </p>
               
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  🔐 OTP दर्ज करें
+                  🔐 Enter OTP 
                 </label>
                 <input
                   type="tel"
@@ -151,21 +151,21 @@ const LoginPage = ({ onLogin, onBack }) => {
                 onClick={handleVerifyOTP}
                 className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 mb-3"
               >
-                सत्यापित करें ✓
+                Verify ✓
               </button>
 
               <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500 mb-2">OTP नहीं मिला?</p>
+                <p className="text-sm text-gray-500 mb-2">Didn't receive OTP?</p>
                 <button className="text-green-600 font-semibold text-sm hover:underline">
-                  पुनः भेजें
+                  Resend OTP?
                 </button>
               </div>
 
-              <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+              {/* <div className="mt-6 p-4 bg-gray-50 rounded-xl">
                 <p className="text-xs text-gray-600 text-center">
                   💡 डेमो के लिए कोई भी 4 अंकों का OTP उपयोग करें (जैसे: 1234)
                 </p>
-              </div>
+              </div> */}
             </div>
           )}
         </div>

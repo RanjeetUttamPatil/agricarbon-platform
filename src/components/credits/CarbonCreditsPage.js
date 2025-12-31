@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   getCurrentUser,
   calculateCarbonCredits,
   calculateCarbonScore,
@@ -20,7 +20,7 @@ const CarbonCreditsPage = ({ onBack }) => {
   useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
-    
+
     if (currentUser) {
       const credits = calculateCarbonCredits(currentUser.id);
       const score = calculateCarbonScore(currentUser.id);
@@ -181,47 +181,84 @@ const CarbonCreditsPage = ({ onBack }) => {
           </div>
 
           {/* Green Score */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-xl">
+            {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <p className="text-gray-600 mb-2">{getTranslation('greenScore')}</p>
-                <p className="text-5xl font-bold text-green-600">{stats.carbonScore}</p>
-                <p className="text-gray-500 mt-1">/100</p>
+                <p className="text-gray-800 mb-2 text-lg">Carbon Credit Lifecycle</p>
+                {/* <p className="text-2xl font-bold text-gray-800">
+                  Current Stage: <span className="text-green-600">{stats.currentStage}</span>
+                </p> */}
               </div>
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-5xl">🌿</span>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-4xl">📘</span>
               </div>
             </div>
 
-            {/* Score Visualization */}
-            <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden mb-4">
-              <div 
-                className="absolute h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-1000"
-                style={{ width: `${stats.carbonScore}%` }}
-              />
+            {/* Horizontal Stepper */}
+            <div className="relative flex justify-between items-center mb-16">
+              {/* Background line */}
+              <div className="absolute top-5 left-5 right-5 h-1 bg-gray-300 z-0"></div>
+              {/* Completed line */}
+              <div
+                className="absolute top-5 left-5 h-1 bg-green-600 z-0"
+                style={{
+                  width: `${(['Generated', 'Submitted', 'Verified', 'Market Ready'].indexOf(stats.currentStage)) * 33.33}%`,
+                }}
+              ></div>
+
+              {['Generated', 'Submitted', 'Verified', 'Market Ready'].map((stage, idx, arr) => {
+                const isCompleted =
+                  arr.indexOf(stage) <= arr.indexOf(stats.currentStage);
+
+                return (
+                  <div key={stage} className="flex-1 flex flex-col items-center relative z-10">
+                    {/* Step circle */}
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 ${isCompleted ? 'bg-green-600 text-white font-bold' : 'bg-gray-300 text-gray-700'
+                        }`}
+                    >
+                      {idx + 1}
+                    </div>
+                    {/* Step label */}
+                    <p
+                      className={`text-sm text-center ${isCompleted ? 'text-green-600 font-semibold' : 'text-gray-500'
+                        }`}
+                    >
+                      {stage}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="grid grid-cols-3 gap-2 text-center text-sm">
-              <div>
-                <div className="font-bold text-gray-800">{stats.farmsCount}</div>
-                <div className="text-gray-500">{getTranslation('farms')}</div>
+            {/* Bottom stats */}
+            <div className="grid grid-cols-3 gap-4 text-center text-sm mt-6">
+              <div className="bg-gray-50 rounded-xl shadow-sm py-4 px-2">
+                <div className="font-bold text-gray-800 text-lg">{stats.farmsCount}</div>
+                <div className="text-gray-500">Farms</div>
               </div>
-              <div>
-                <div className="font-bold text-gray-800">{stats.practicesBreakdown.length}</div>
+              <div className="bg-gray-50 rounded-xl shadow-sm py-4 px-2">
+                <div className="font-bold text-gray-800 text-lg">{stats.practicesBreakdown.length}</div>
                 <div className="text-gray-500">Practices</div>
               </div>
-              <div>
-                <div className="font-bold text-gray-800">{Math.round(stats.totalCredits)}</div>
+              <div className="bg-gray-50 rounded-xl shadow-sm py-4 px-2">
+                <div className="font-bold text-gray-800 text-lg">{Math.round(stats.totalCredits)}</div>
                 <div className="text-gray-500">Credits</div>
               </div>
             </div>
+
           </div>
+
+
+
+
         </div>
 
         {/* Impact Breakdown */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">{getTranslation('breakdown')}</h2>
-          
+
           {stats.practicesBreakdown.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4">
               {stats.practicesBreakdown.map((practice, idx) => (
@@ -240,7 +277,7 @@ const CarbonCreditsPage = ({ onBack }) => {
                     </div>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-green-500 h-2 rounded-full"
                       style={{ width: `${(practice.impact / 2.5) * 100}%` }}
                     />

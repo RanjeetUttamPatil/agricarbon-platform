@@ -101,7 +101,7 @@ const LandingPage = ({ onGetStarted }) => {
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-gray-700 hover:text-green-600 font-medium transition">Features</a>
               <a href="#how-it-works" className="text-gray-700 hover:text-green-600 font-medium transition">How It Works</a>
-              <a href="#testimonials" className="text-gray-700 hover:text-green-600 font-medium transition">Testimonials</a>
+              {/* <a href="#testimonials" className="text-gray-700 hover:text-green-600 font-medium transition">Testimonials</a> */}
               <button
                 onClick={onGetStarted}
                 className="px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105"
@@ -174,22 +174,8 @@ const LandingPage = ({ onGetStarted }) => {
               </div>
             </div>
             <div className="relative">
-              <div className="relative z-10 bg-white rounded-3xl shadow-2xl p-8 transform rotate-2 hover:rotate-0 transition duration-300">
-                <div className="text-6xl mb-4 text-center">🌾</div>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-green-50 rounded-xl p-4 text-center">
-                    <div className="text-3xl font-bold text-green-600">85</div>
-                    <div className="text-sm text-gray-600">Green Score</div>
-                  </div>
-                  <div className="bg-blue-50 rounded-xl p-4 text-center">
-                    <div className="text-3xl font-bold text-blue-600">24.5</div>
-                    <div className="text-sm text-gray-600">Credits Earned</div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4">
-                  <div className="text-sm text-gray-600 mb-1">Total Earnings</div>
-                  <div className="text-4xl font-bold text-yellow-700">₹45,000</div>
-                </div>
+              <div className="relative z-4 bg-white rounded-3xl shadow-2xl p-8 transform rotate-2 hover:rotate-0 transition duration-300">
+                <img src='./landing.png'/>
               </div>
               <div className="absolute -bottom-4 -right-4 w-full h-full bg-gradient-to-br from-green-200 to-emerald-300 rounded-3xl -z-10"></div>
             </div>
@@ -198,7 +184,7 @@ const LandingPage = ({ onGetStarted }) => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, idx) => (
@@ -210,7 +196,7 @@ const LandingPage = ({ onGetStarted }) => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-green-50">
@@ -279,7 +265,7 @@ const LandingPage = ({ onGetStarted }) => {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-20 bg-gradient-to-br from-green-50 to-emerald-50">
+      {/* <section id="testimonials" className="py-20 bg-gradient-to-br from-green-50 to-emerald-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -310,7 +296,7 @@ const LandingPage = ({ onGetStarted }) => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-green-600 to-emerald-600">

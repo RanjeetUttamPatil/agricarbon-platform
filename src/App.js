@@ -8,11 +8,14 @@ import EcoPracticePage from './components/practice/EcoPracticePage';
 import ProofUploadPage from './components/proof/ProofUploadPage';
 import CarbonCreditsPage from './components/credits/CarbonCreditsPage';
 import MarketplacePage from './components/marketplace/MarketplacePage';
+import FloatingChatButton from './components/common/FloatingChatButton';
+import AIChatbotPage from './components/chatbot/AIChatbotPage';
 import { setCurrentUser as setGlobalCurrentUser } from './data/dataStore';
 import './App.css';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('landing'); // landing, login, onboarding, etc.
+  const [showChatbot, setShowChatbot] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   const handleGetStarted = () => {
@@ -52,6 +55,9 @@ function App() {
   };
 
   const renderPage = () => {
+    if (currentPage === 'chatbot') {
+      return <AIChatbotPage onBack={() => setCurrentPage('dashboard')} onNavigate={setCurrentPage} />;
+    }
     switch (currentPage) {
       case 'landing':
         return <LandingPage onGetStarted={handleGetStarted} />;
@@ -101,6 +107,11 @@ function App() {
   return (
     <div className="App">
       {renderPage()}
+      
+      {/* Floating Chat Button - Shows on all pages except login/landing/chatbot */}
+      {!['landing', 'login', 'chatbot'].includes(currentPage) && (
+        <FloatingChatButton onClick={() => setCurrentPage('chatbot')} />
+      )}
     </div>
   );
 }

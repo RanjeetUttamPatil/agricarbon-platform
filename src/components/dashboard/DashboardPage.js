@@ -159,6 +159,7 @@ const DashboardPage = ({ onNavigate, onLogout }) => {
     { icon: '📸', label: getTranslation('proofUpload'), page: 'proof-upload' },
     { icon: '💚', label: getTranslation('credits'), page: 'credits' },
     { icon: '🏪', label: getTranslation('marketplace'), page: 'marketplace' },
+    { icon: '🤖', label: 'AI Assistant', page: 'chatbot' },
   ];
 
   return (
@@ -305,7 +306,7 @@ const DashboardPage = ({ onNavigate, onLogout }) => {
         {/* Dashboard Content */}
         <div className="p-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-gray-600 text-sm font-medium">{getTranslation('greenScore')}</span>
@@ -355,7 +356,7 @@ const DashboardPage = ({ onNavigate, onLogout }) => {
                 {stats.practicesCount} practices • {stats.proofsCount} proofs
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* AI Recommendations */}
           {recommendations.length > 0 && (
